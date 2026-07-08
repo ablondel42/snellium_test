@@ -1,3 +1,0 @@
-"""
-Dataclass for reports
-"""
