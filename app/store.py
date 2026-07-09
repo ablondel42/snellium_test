@@ -3,32 +3,31 @@ from pathlib import Path
 
 
 class DataStore:
-    def __init__(self, metadata_file):
-        self.metadata_file = metadata_file
-        print(self.metadata_file)
+    def __init__(self, data_file):
+        self.data_file = Path(data_file)
 
     
     def load_records(self):
-        if not self.metadata_file.exists():
+        if not self.data_file.exists():
             return []
 
-        with self.metadata_file.open("r", encoding="utf-8") as file_handle:
+        with self.data_file.open("r", encoding="utf-8") as file_handle:
             raw_data = json.load(file_handle)
 
-        loaded_records = []
+        records = []
         authors_mapping = raw_data.get("authors", {})
 
-        for author_name, report_entries in authors_mapping.items():
-            for report_entry in report_entries:
-                loaded_records.append(
+        for author_name, entries in authors_mapping.items():
+            for entry in entries:
+                records.append(
                     {
-                        "filename": report_entry["filename"],
-                        "original_path": Path(report_entry["path"]),
                         "author_name": author_name,
+                        "filename": entry["filename"],
+                        "original_path": Path(entry["path"]),
                     }
                 )
 
-        return loaded_records
+        return records
 
     
     def save_records(self, records):
@@ -36,31 +35,20 @@ class DataStore:
 
         for record in records:
             author_name = record["author_name"]
-
-            if author_name not in grouped_records:
-                grouped_records[author_name] = []
-
-            grouped_records[author_name].append(record)
+            grouped_records.setdefault(author_name, []).append(record)
 
         serialized_data = {"authors": {}}
 
-        for author_name in grouped_records:
-            sorted_records = sorted(
-                grouped_records[author_name],
-                key=lambda record: record["filename"],
-            )
+        for author_name, report_records in grouped_records.items():
+            serialized_data["authors"][author_name] = [
+                {
+                    "filename": record["filename"],
+                    "path": str(record["original_path"]),
+                }
+                for record in sorted(report_records, key=lambda rec: rec["filename"])
+            ]
 
-            serialized_data["authors"][author_name] = []
-
-            for record in sorted_records:
-                serialized_data["authors"][author_name].append(
-                    {
-                        "filename": record["filename"],
-                        "path": str(record["original_path"]),
-                    }
-                )
-
-        self.metadata_file.parent.mkdir(parents=True, exist_ok=True)
-
-        with self.metadata_file.open("w", encoding="utf-8") as file_handle:
-            json.dump(serialized_data, file_handle, indent=2)
+        self.data_file.parent.mkdir(parents=True, exist_ok=True)
+        with self.data_file.open("w", encoding="utf-8") as file_handle:
+            json.dump(serialized_data, file_handle, ensure_ascii=False, indent=4)
+    
