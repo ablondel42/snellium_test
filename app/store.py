@@ -6,6 +6,7 @@ class MetadataStore:
     def __init__(self, metadata_file):
         self.metadata_file = metadata_file
 
+    
     def load_records(self):
         if not self.metadata_file.exists():
             return []
@@ -28,6 +29,7 @@ class MetadataStore:
 
         return loaded_records
 
+    
     def save_records(self, records):
         grouped_records = {}
 
@@ -41,7 +43,7 @@ class MetadataStore:
 
         serialized_data = {"authors": {}}
 
-        for author_name in sorted(grouped_records):
+        for author_name in grouped_records:
             sorted_records = sorted(
                 grouped_records[author_name],
                 key=lambda record: record["filename"],
