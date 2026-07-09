@@ -2,9 +2,10 @@ import json
 from pathlib import Path
 
 
-class MetadataStore:
+class DataStore:
     def __init__(self, metadata_file):
         self.metadata_file = metadata_file
+        print(self.metadata_file)
 
     
     def load_records(self):

@@ -1,24 +1,19 @@
 from pathlib import Path
 import shutil
 
+from app.store import DataStore
+
 
 class ReportService:
-    def __init__(self, metadata_store):
-        self.metadata_store = metadata_store
+    def __init__(self, data_store: DataStore):
+        self.data_store = data_store
         self.authors_to_reports = {}
         self.report_lookup = {}
-        self._load_existing_records()
+        self.load_records()
 
     
-    def _load_existing_records(self):
-        loaded_records = self.metadata_store.load_records()
-        self._rebuild_indexes(loaded_records)
-
-    
-    def _rebuild_indexes(self, records):
-        self.authors_to_reports = {}
-        self.report_lookup = {}
-
+    def load_records(self):
+        records = self.data_store.load_records()
         for record in records:
             author_name = record["author_name"]
             filename = record["filename"]
@@ -39,8 +34,8 @@ class ReportService:
         return all_records
 
     
-    def add_report(self, report_path_text, author_name):
-        report_path = Path(report_path_text)
+    def add_report(self, report_path, author_name):
+        report_path = Path(report_path)
         filename = report_path.name
 
         new_record = {
@@ -65,7 +60,7 @@ class ReportService:
         self.authors_to_reports[author_name].append(new_record)
         self.report_lookup[lookup_key] = new_record
 
-        self.metadata_store.save_records(self._all_records())
+        self.data_store.save_records(self._all_records())
 
     
     def list_authors(self):
@@ -77,7 +72,7 @@ class ReportService:
         return sorted(record["filename"] for record in author_reports)
 
     
-    def save_report_copy(self, author_name, report_filename, destination_path_text):
+    def copy_report(self, author_name, report_filename, destination_path_text):
         record = self.report_lookup[(author_name, report_filename)]
         destination_path = Path(destination_path_text)
 
