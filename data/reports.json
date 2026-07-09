@@ -1,3 +1,34 @@
 {
-    "authors": {}
+    "authors": {
+        "Elena Voss": [
+            {
+                "filename": "report-1.md",
+                "path": "reports/report-1.md"
+            },
+            {
+                "filename": "report-2.md",
+                "path": "reports/report-2.md"
+            },
+            {
+                "filename": "report-4.md",
+                "path": "reports/report-4.md"
+            }
+        ],
+        "Marcus Hale": [
+            {
+                "filename": "report-3.md",
+                "path": "reports/report-3.md"
+            },
+            {
+                "filename": "report-5.md",
+                "path": "reports/report-5.md"
+            }
+        ],
+        "James Reynolds": [
+            {
+                "filename": "report-6.md",
+                "path": "reports/report-6.md"
+            }
+        ]
+    }
 }
