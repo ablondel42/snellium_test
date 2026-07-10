@@ -7,11 +7,12 @@ from app.store import DataStore
 class ReportService:
     def __init__(self, data_store: DataStore):
         self.data_store = data_store
-        self.authors_to_reports = {}
-        self.report_lookup = {}
+        self.authors_to_reports = {} # list authors / reports for author
+        self.report_lookup = {} # copy report by author name + filename
         self.load_records()
 
     def load_records(self):
+        # load records from store + set dictionaries
         records = self.data_store.load_records()
         self.authors_to_reports = {}
         self.report_lookup = {}
@@ -23,6 +24,7 @@ class ReportService:
             self.report_lookup[(author_name, filename)] = record
 
     def _all_records(self):
+        # convert authors_to_reports to list for saving to JSON
         return [record for records in self.authors_to_reports.values() for record in records]
 
     def add_report(self, report_path, author_name):
@@ -47,12 +49,15 @@ class ReportService:
         self.data_store.save_records(self._all_records())
 
     def list_authors(self):
+        # sorted list of authors / not sure sorting is needed
         return sorted(self.authors_to_reports.keys())
 
     def list_reports_by_author(self, author_name):
+        # sorted list of reports for author / not sure sorting is needed there either 
         return sorted(record["filename"] for record in self.authors_to_reports.get(author_name, []))
 
     def copy_report(self, author_name, report_filename, destination_path_text):
+        # copy report from lookup to dest
         record = self.report_lookup[(author_name, report_filename)]
         destination_path = Path(destination_path_text)
         destination_path.parent.mkdir(parents=True, exist_ok=True)

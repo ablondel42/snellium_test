@@ -1,11 +1,17 @@
 # snellium_test
-<!-- python 3.14.3 -->
-The program is a CLI tool that allows users to manage and retrieve reports associated with different authors. It provides functionalities to add or copy reports, list authors, and retrieve reports by author name.
+<!-- "python 3.14.3" -->
+<!-- "python3 main.py" to start the program -->
 
-It uses a JSON file to store the authors and their associated reports.
-The JSON file is loaded once when the program starts, and any changes made to the reports are saved back to the file. It uses a lookup dictionary with composite keys (author_name, report_filename) to allow quick access to the data without reading the entire file for each operation.
+The program is a CLI tool that allows users to manage and retrieve reports written by different authors. It provides functions to add or copy reports, list authors, and retrieve reports.
 
-Overview of the program:
+It uses a JSON file to persist the authors and their associated reports.
+The JSON file is loaded once when the program starts, and any changes made to the reports are saved back to the file.
+
+It also uses 2 dictionaries to store the data in memory:
+- `self.authors_to_reports`: Maps author names to lists of their reports.
+- `self.report_lookup`: Maps (author_name, report_filename) keys to the corresponding report records to do faster lookups and retrievals. (Example: avoid scanning the entire list of reports for an author when looking for a specific report to copy or retrieve.)
+
+Overview of the classes and files:
 - main.py: The entry point. It initializes the objects and runs the command loop.
 - cli.py: Class that handles user input to manage the report records.
 - services.py: Class that provides methods to save/copy and retrieve reports.

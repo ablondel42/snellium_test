@@ -8,6 +8,7 @@ class DataStore:
 
     
     def load_records(self):
+        # load records from JSON file and return as list of dicts
         if not self.data_file.exists():
             return []
 
@@ -31,6 +32,7 @@ class DataStore:
 
     
     def save_records(self, records):
+        # save records to JSON file, grouped by author
         grouped_records = {}
 
         for record in records:

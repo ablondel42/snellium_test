@@ -37,6 +37,4 @@ class CommandLoop:
             case "save":
                 self.report_service.copy_report(args[1], args[2], args[3])
                 print(f"Report successfully copied to {args[3]}")
-            case _:
-                print("Unknown command")
 

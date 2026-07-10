@@ -5,8 +5,7 @@ from app.store import DataStore
 
 
 if __name__ == "__main__":
-    reports_file = Path("data/reports.json")
-    data_store = DataStore(reports_file)
+    data_store = DataStore(Path("data/reports.json"))
     report_service = ReportService(data_store)
     command_loop = CommandLoop(report_service)
     command_loop.run()
